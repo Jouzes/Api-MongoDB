@@ -1,0 +1,25 @@
+{
+  "name": "api-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon serviçoServidor.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jouzes/Api-MongoDB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Jouzes/Api-MongoDB/issues"
+  },
+  "homepage": "https://github.com/Jouzes/Api-MongoDB#readme",
+  "dependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
