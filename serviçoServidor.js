@@ -1,18 +1,6 @@
-import http from 'http'
-const PORT = 3333;
-
-//Cria servidor http
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { "Content-Type": "text/plan" });
-    res.end(rotas[req.url]);
-});
-
+import app from "./src/app.js";
+const PORT = 5000;
 //Inicia servidor
-server.listen(PORT, () => {
-    console.log('servidor escutando na porta 3333');
+app.listen(PORT, () => {
+    console.log('lçlkokpkkpok');
 });
-
-//Rotas
-const rotas = {
-    "/": "rotaBase"
-};
