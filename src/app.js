@@ -1,30 +1,23 @@
 import express from "express";
+import conectaBD from "./config/bdConecta.js";
+import pessoa from "./models/pessoa.js";
+
+//Instancia o express e cria middleware
 const app = express();
 app.use(express.json());
 
-function buscaPessoa (id) {
-    return pessoas.findIndex(pessoa => {
-        return pessoa.id === Number(id);
-    })
-}
-
-const pessoas = [
-    {
-        "id": 1,
-        "nome": "teste"
-    },
-    {
-        "id": 2,
-        "nome": "teste2"
-    }
-]
-
-app.get('/', (res, req) => {
-    res.status(200).send("API ONLINE");
+//Instancia conexão ao bd
+const conexao = await conectaBD();
+conexao.on("error", (erro) => {
+    console.error("erro de conexão: " + erro);
+});
+conexao.once("open", () => {
+    console.log("conexão realizada com sucesso!");
 });
 
-app.get('/getPessoa', (req, res) => {
-    res.status(200).json(pessoas);
+//Rotas express
+app.get('/', async (req, res) => {
+    res.status(200).send("API ONLINE");
 });
 
 app.get('/getPessoa/:id', (req, res) => {
