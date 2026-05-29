@@ -3,14 +3,22 @@ import pessoa from "../models/pessoa.js";
 class PessoaController {
     //Rota GET padrão
     static async listarPessoas (req, res) {
-        const listaPessoas = await pessoa.find({});
-        res.status(200).json(listaPessoas);
+        try {
+            const listaPessoas = await pessoa.find({});
+            res.status(200).json(listaPessoas);
+        } catch (erro) {
+            res.status(500).json({message: "Erro ao listar pessoas!", erro: erro});
+        }
     }
     
     //GET com filtro
     static async listarPessoa (req, res) {
-        const listaPessoa = await pessoa.findById(req.params.id);
-        res.status(200).json(listaPessoa);
+        try {
+            const listaPessoa = await pessoa.findById(req.params.id);
+            res.status(200).json(listaPessoa);
+        } catch (erro) {
+            res.status(500).json({message: "Erro ao listar pessoa!", erro: erro});
+        }
     }
 
     //POST
@@ -27,7 +35,7 @@ class PessoaController {
     static async alterarPessoa (req, res) {
         try {
             const pessoaAtualizada = await pessoa.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after" });
-            res.status(200).json(pessoa.pessoaAtualizada);
+            res.status(200).json({message: "Cadastro alterado com sucesso", pessoa: pessoaAtualizada});
         } catch (erro) {
             res.status(500).json({message: `${erro.message}`});
         }
@@ -37,7 +45,7 @@ class PessoaController {
     static async excluirPessoa (req, res) {
         try {
             const pessoaExcluida = await pessoa.findByIdAndDelete(req.params.id);
-            res.status(200).send("Cadastro excluído com sucesso!" + JSON.stringify(pessoaExcluida));
+            res.status(200).json({message: "Cadastro excluído com sucesso!"});
         } catch (erro) {
             res.status(500).json({message: `${erro.message}`});
         }
