@@ -1,4 +1,5 @@
 import pessoa from "../models/pessoa.js";
+import {veiculo} from "../models/veiculo.js";
 
 class PessoaController {
     //Rota GET padrão
@@ -23,9 +24,12 @@ class PessoaController {
 
     //POST
     static async cadastrarPessoa (req, res) {
+    const novaPessoa = req.body;
         try {
-        const novaPessoa = await pessoa.create(req.body); 
-        res.status(201).json({message: "Cadastro realizado! ", pessoa: novaPessoa});
+            const veiculoEncontrado = await veiculo.findById(novaPessoa.veiculo);
+            const pessoaCompleta = {...novaPessoa, veiculo: { ...veiculoEncontrado._doc }};
+            const pessoaCriada = await pessoa.create(pessoaCompleta); 
+            res.status(201).json({message: "Cadastro realizado! ", pessoa: pessoaCriada});
         } catch (erro) {
             res.status(500).json({message: `${erro.message}`});
         }
@@ -44,10 +48,21 @@ class PessoaController {
     //DELETE
     static async excluirPessoa (req, res) {
         try {
-            const pessoaExcluida = await pessoa.findByIdAndDelete(req.params.id);
+            await pessoa.findByIdAndDelete(req.params.id);
             res.status(200).json({message: "Cadastro excluído com sucesso!"});
         } catch (erro) {
             res.status(500).json({message: `${erro.message}`});
+        }
+    }
+
+    //
+    static async listarPessoasPorCarro ( req, res) {
+        const veiculo = req.query.veiculo;
+        try {
+            const pessoasPorVeiculo = await veiculo.find({veiculo: veiculo});
+            res.status(200).json(pessoasPorVeiculo);
+        } catch (erro) {
+            res.status(500).json({message: "Erro ao listar pessoas por veiculo!", erro: erro});
         }
     }
 }
