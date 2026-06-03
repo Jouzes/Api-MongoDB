@@ -13,15 +13,18 @@ class PessoaController {
     }
     
     //GET com filtro
-    static async listarPessoa (req, res) {
+    static async listarPessoa (req, res, next) {
         try {
             const listaPessoa = await pessoa.findById(req.params.id).populate("veiculo");
-            res.status(200).json(listaPessoa);
+            if (listaPessoa !== null) {
+                res.status(200).json(listaPessoa);
+            } else {
+                res.status(404).json({message: "Nenhum cadastro encontrado!"});
+            }
         } catch (erro) {
-            res.status(500).json({message: "Erro ao listar pessoa!", erro: erro});
+            next(erro);
         }
     }
-
     //POST
     static async cadastrarPessoa (req, res) {
     const novaPessoa = req.body;
@@ -69,7 +72,7 @@ class PessoaController {
         }
     }
 
-    static async listarPessoasPorVeiculo ( req, res) {
+    static async listarPessoasPorVeiculo (req, res) {
         const nomeVeiculo = req.query.veiculo;
         try {
             const veiculosEncontrados = await veiculo.find({nome: nomeVeiculo});
