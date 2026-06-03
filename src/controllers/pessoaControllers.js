@@ -8,7 +8,7 @@ class PessoaController {
             const listaPessoas = await pessoa.find({}).populate("veiculo");
             res.status(200).json(listaPessoas);
         } catch (erro) {
-            res.status(500).json({message: "Erro ao listar pessoas!", erro: erro});
+            next(erro);
         }
     }
     
@@ -26,7 +26,7 @@ class PessoaController {
         }
     }
     //POST
-    static async cadastrarPessoa (req, res) {
+    static async cadastrarPessoa (req, res, next) {
     const novaPessoa = req.body;
         try {
             const veiculoEncontrado = await veiculo.findById(novaPessoa.veiculo);
@@ -40,12 +40,12 @@ class PessoaController {
 
             res.status(201).json({message: "Cadastro realizado! ", pessoa: pessoaCriada});
         } catch (erro) {
-            res.status(500).json({message: `${erro.message}`});
+            next(erro);
         }
     }
 
     //PUT
-    static async alterarPessoa (req, res) {
+    static async alterarPessoa (req, res, next) {
         try {
             if (req.body.veiculo) {
                 const veiculoEncontrado = await veiculo.findById(req.body.veiculo);
@@ -58,21 +58,21 @@ class PessoaController {
             const pessoaAtualizada = await pessoa.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after" }).populate("veiculo");
             res.status(200).json({message: "Cadastro alterado com sucesso", pessoa: pessoaAtualizada});
         } catch (erro) {
-            res.status(500).json({message: `${erro.message}`});
+            next(erro);
         }
     }
 
     //DELETE
-    static async excluirPessoa (req, res) {
+    static async excluirPessoa (req, res, next) {
         try {
             await pessoa.findByIdAndDelete(req.params.id);
             res.status(200).json({message: "Cadastro excluído com sucesso!"});
         } catch (erro) {
-            res.status(500).json({message: `${erro.message}`});
+            next(erro);
         }
     }
 
-    static async listarPessoasPorVeiculo (req, res) {
+    static async listarPessoasPorVeiculo (req, res, next) {
         const nomeVeiculo = req.query.veiculo;
         try {
             const veiculosEncontrados = await veiculo.find({nome: nomeVeiculo});
@@ -80,7 +80,7 @@ class PessoaController {
             const pessoaPorVeiculo = await pessoa.find({veiculo: {$in: veiculosIds}}).populate("veiculo");
             res.status(200).json(pessoaPorVeiculo);
         } catch (erro) {
-            res.status(500).json({message: `${erro.message}`});
+            next(erro);
         }
     }
 }
