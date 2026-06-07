@@ -1,9 +1,10 @@
 import pessoa from "../models/pessoa.js";
 import {veiculo} from "../models/veiculo.js";
+import NaoEncontrado from "../erros/naoEncontrado.js";
 
 class PessoaController {
-    //Rota GET padrão
-    static async listarPessoas (req, res) {
+    //GET padrão
+    static async listarPessoas (req, res, next) {
         try {
             const listaPessoas = await pessoa.find({}).populate("veiculo");
             res.status(200).json(listaPessoas);
@@ -19,23 +20,23 @@ class PessoaController {
             if (listaPessoa !== null) {
                 res.status(200).json(listaPessoa);
             } else {
-                res.status(404).json({message: "Nenhum cadastro encontrado!"});
+                next(new NaoEncontrado("Id da pessoa não encontrado!"));
             }
         } catch (erro) {
             next(erro);
         }
     }
+
     //POST
     static async cadastrarPessoa (req, res, next) {
-    const novaPessoa = req.body;
         try {
-            const veiculoEncontrado = await veiculo.findById(novaPessoa.veiculo);
+            const veiculoEncontrado = await veiculo.findById(req.body.veiculo);
 
             if (!veiculoEncontrado) {
                 return res.status(404).json({message: "Veiculo nao encontrado!"});
             }
 
-            const pessoaCriada = await pessoa.create(novaPessoa);
+            const pessoaCriada = await pessoa.create(req.body);
             await pessoaCriada.populate("veiculo");
 
             res.status(201).json({message: "Cadastro realizado! ", pessoa: pessoaCriada});

@@ -1,15 +1,17 @@
 import express from "express";
 import conectaBD from "./config/bdConecta.js";
 import routes from "./routes/index.js";
-import mongoose from "mongoose";
 import errosController from "./middlewares/errosController.js";
+import erros404 from "./middlewares/erros404.js";
 
 //Instancia o express e cria middleware
 const app = express();
+app.use(express.json());
 routes(app);
 
-// eslint-disable-next-line no-unused-vars
-app.use(errosController());
+app.use(erros404);
+
+app.use(errosController);
 
 //Instancia conexão ao bd
 const conexao = await conectaBD();
