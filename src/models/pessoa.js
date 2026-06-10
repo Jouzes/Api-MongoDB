@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const pessoaSchema = new mongoose.Schema({
-    //id: { type: mongoose.Schema.Types.ObjectId },
     nome: { type: String, required: [true, "O nome da pessoa não foi informado!"] },
     cpf: { type: String, required: [true, "O CPF da pessoa não foi informado!"] },
     dataNascimento: { type: String },

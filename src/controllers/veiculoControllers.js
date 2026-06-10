@@ -1,4 +1,5 @@
-import { veiculo } from "../models/veiculo.js";
+import {veiculo} from "../models/index.js";
+import NaoEncontrado from "../erros/naoEncontrado.js";
 
 class VeiculoController {
     //Rota GET padrão
@@ -22,7 +23,7 @@ class VeiculoController {
             if (listaVeiculo !== null) {
                 res.status(200).json(listaVeiculo);
             } else {
-                res.status(404).json({message: "Veículo não encontrado!"});
+                next(new NaoEncontrado("Nenhum veículo encontrado com esse Id!"));
             }
         } catch (erro) {
             next(erro);
@@ -43,7 +44,11 @@ class VeiculoController {
     static async alterarVeiculo (req, res, next) {
         try {
             const veiculoAtualizado = await veiculo.findByIdAndUpdate(req.params.id, req.body, { returnDocument: "after" });
-            res.status(200).json({message: "Cadastro alterado com sucesso", veiculo: veiculoAtualizado});
+            if (veiculoAtualizado !== null) {
+                res.status(200).json({message: "Cadastro alterado com sucesso", veiculo: veiculoAtualizado});
+            } else {
+                next(new NaoEncontrado("Nenhum veículo encontrado com esse ID!"));
+            }
         } catch (erro) {
             next(erro);
         }
@@ -52,8 +57,12 @@ class VeiculoController {
     //DELETE
     static async excluirVeiculo (req, res, next) {
         try {
-            await veiculo.findByIdAndDelete(req.params.id);
-            res.status(200).json({message: "Cadastro excluído com sucesso!"});
+            const veiculoExcluido = await veiculo.findByIdAndDelete(req.params.id);
+            if (veiculoExcluido !== null) {
+                res.status(200).json({message: "Cadastro excluído com sucesso!"});
+            } else {
+                next(new NaoEncontrado("Nenhum veículo encontrado com esse ID!"));
+            }
         } catch (erro) {
             next(erro);
         }
